@@ -1,0 +1,13 @@
+{% extends "bank/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h4 class="page-title"><i class="bi bi-person-plus me-2"></i>{{ title }}</h4>
+<div class="card shadow-sm form-card"><div class="card-body">
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include "bank/_form_fields.html" %}
+    <button type="submit" class="btn btn-brand"><i class="bi bi-save me-1"></i>Save</button>
+    <a href="{% url 'customer_list' %}" class="btn btn-outline-secondary">Cancel</a>
+  </form>
+</div></div>
+{% endblock %}

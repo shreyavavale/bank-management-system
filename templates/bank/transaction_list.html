@@ -1,0 +1,32 @@
+{% extends "bank/base.html" %}
+{% block title %}Transaction History{% endblock %}
+{% block content %}
+<h4 class="page-title"><i class="bi bi-receipt me-2"></i>Transaction History</h4>
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-6"><input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by account number"></div>
+  <div class="col-md-3"><select name="type" class="form-select">
+    <option value="">All types</option>
+    <option value="DEPOSIT" {% if kind == 'DEPOSIT' %}selected{% endif %}>Deposits</option>
+    <option value="WITHDRAWAL" {% if kind == 'WITHDRAWAL' %}selected{% endif %}>Withdrawals</option>
+  </select></div>
+  <div class="col-md-3 d-grid"><button class="btn btn-brand"><i class="bi bi-funnel me-1"></i>Filter</button></div>
+</form>
+<div class="card shadow-sm"><div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+  <thead><tr><th>Transaction ID</th><th>Account No.</th><th>Customer</th><th>Type</th><th class="text-end">Amount</th><th class="text-end">Balance After</th><th>Date &amp; Time</th></tr></thead>
+  <tbody>
+  {% for t in page_obj %}
+    <tr>
+      <td>TXN{{ t.transaction_id|stringformat:"06d" }}</td>
+      <td><a href="{% url 'account_detail' t.account.pk %}">{{ t.account.account_number }}</a></td>
+      <td>{{ t.account.customer.full_name }}</td>
+      <td><span class="badge {% if t.transaction_type == 'DEPOSIT' %}bg-success{% else %}bg-danger{% endif %}">{{ t.get_transaction_type_display }}</span></td>
+      <td class="text-end">&#8377; {{ t.amount }}</td><td class="text-end">&#8377; {{ t.balance_after_transaction }}</td>
+      <td>{{ t.transaction_date|date:"d M Y, h:i A" }}</td>
+    </tr>
+  {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No transactions found.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+{% include "bank/_pagination.html" %}
+</div>
+{% endblock %}

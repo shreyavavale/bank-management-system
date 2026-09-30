@@ -1,0 +1,28 @@
+{% extends "bank/base.html" %}
+{% block title %}REST API{% endblock %}
+{% block content %}
+<h4 class="page-title"><i class="bi bi-braces me-2"></i>REST API Documentation</h4>
+<p>The API is built with <strong>Django REST Framework</strong>. Log in first (session authentication) or use HTTP Basic authentication. Responses are JSON, and every list endpoint is paginated (10 records per page).</p>
+<div class="card shadow-sm mb-4">
+  <div class="card-header card-head">Endpoints</div>
+  <div class="table-responsive"><table class="table table-hover mb-0 align-middle">
+    <thead><tr><th>Resource</th><th>URL</th><th>Methods</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Customers</td><td><a href="/api/customers/"><code>/api/customers/</code></a></td><td>GET, POST, PUT, PATCH, DELETE</td><td>Full CRUD. Detail URL: <code>/api/customers/&lt;id&gt;/</code></td></tr>
+      <tr><td>Accounts</td><td><a href="/api/accounts/"><code>/api/accounts/</code></a></td><td>GET, POST, PUT, PATCH, DELETE</td><td>Full CRUD. Account number is auto-generated; balance changes only via deposit/withdrawal.</td></tr>
+      <tr><td>Deposits</td><td><a href="/api/deposits/"><code>/api/deposits/</code></a></td><td>GET, POST</td><td>POST body: <code>account</code>, <code>amount</code></td></tr>
+      <tr><td>Withdrawals</td><td><a href="/api/withdrawals/"><code>/api/withdrawals/</code></a></td><td>GET, POST</td><td>Rejected with HTTP 400 when balance is insufficient.</td></tr>
+      <tr><td>Transactions</td><td><a href="/api/transactions/"><code>/api/transactions/</code></a></td><td>GET</td><td>Read-only ledger so history cannot be altered.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+<div class="card shadow-sm">
+  <div class="card-header card-head">Example: deposit using curl</div>
+  <div class="card-body">
+<pre class="code-block mb-0">curl -u admin:admin123 -X POST http://127.0.0.1:8000/api/deposits/ \
+     -H "Content-Type: application/json" \
+     -d '{"account": "100012345678", "amount": "2500.00"}'</pre>
+  </div>
+</div>
+<p class="mt-3"><a href="/api/" class="btn btn-brand"><i class="bi bi-box-arrow-up-right me-1"></i>Open Browsable API Root</a></p>
+{% endblock %}

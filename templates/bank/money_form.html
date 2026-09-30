@@ -1,0 +1,29 @@
+{% extends "bank/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h4 class="page-title"><i class="bi {% if kind == 'DEPOSIT' %}bi-arrow-down-circle{% else %}bi-arrow-up-circle{% endif %} me-2"></i>{{ title }}</h4>
+<div class="row g-3">
+  <div class="col-lg-5"><div class="card shadow-sm"><div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include "bank/_form_fields.html" %}
+      <button type="submit" class="btn {% if kind == 'DEPOSIT' %}btn-success{% else %}btn-primary{% endif %}">
+        <i class="bi bi-check2-circle me-1"></i>{% if kind == 'DEPOSIT' %}Deposit{% else %}Withdraw{% endif %}
+      </button>
+      <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+  </div></div></div>
+  <div class="col-lg-7"><div class="card shadow-sm">
+    <div class="card-header card-head">Recent {% if kind == 'DEPOSIT' %}Deposit{% else %}Withdrawal{% endif %} History</div>
+    <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+      <thead><tr><th>Txn ID</th><th>Account</th><th class="text-end">Amount</th><th>Date</th></tr></thead>
+      <tbody>
+      {% for t in history %}
+        <tr><td>TXN{{ t.transaction_id|stringformat:"06d" }}</td><td>{{ t.account.account_number }}</td>
+        <td class="text-end">&#8377; {{ t.amount }}</td><td>{{ t.transaction_date|date:"d M Y, h:i A" }}</td></tr>
+      {% empty %}<tr><td colspan="4" class="text-center text-muted py-3">Nothing here yet.</td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "bank/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h4 class="page-title"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h4>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-xl-3"><div class="stat-card c1"><i class="bi bi-people"></i><div><h3>{{ total_customers }}</h3><span>Total Customers</span></div></div></div>
+  <div class="col-6 col-xl-3"><div class="stat-card c2"><i class="bi bi-credit-card-2-front"></i><div><h3>{{ total_accounts }}</h3><span>Total Accounts</span></div></div></div>
+  <div class="col-6 col-xl-3"><div class="stat-card c3"><i class="bi bi-arrow-down-circle"></i><div><h3>&#8377; {{ total_deposits }}</h3><span>Total Deposits</span></div></div></div>
+  <div class="col-6 col-xl-3"><div class="stat-card c4"><i class="bi bi-arrow-up-circle"></i><div><h3>&#8377; {{ total_withdrawals }}</h3><span>Total Withdrawals</span></div></div></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header card-head">Recent Transactions</div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead><tr><th>Txn ID</th><th>Account</th><th>Type</th><th class="text-end">Amount</th><th>Date</th></tr></thead>
+          <tbody>
+          {% for t in recent_transactions %}
+            <tr>
+              <td>TXN{{ t.transaction_id|stringformat:"06d" }}</td>
+              <td><a href="{% url 'account_detail' t.account.pk %}">{{ t.account.account_number }}</a></td>
+              <td><span class="badge {% if t.transaction_type == 'DEPOSIT' %}bg-success{% else %}bg-danger{% endif %}">{{ t.get_transaction_type_display }}</span></td>
+              <td class="text-end">&#8377; {{ t.amount }}</td>
+              <td>{{ t.transaction_date|date:"d M Y, h:i A" }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-center text-muted py-3">No transactions yet.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card shadow-sm mb-3">
+      <div class="card-header card-head">Account Status</div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-2"><span><i class="bi bi-check-circle text-success me-1"></i>Active accounts</span><strong>{{ active_accounts }}</strong></div>
+        <div class="d-flex justify-content-between"><span><i class="bi bi-x-circle text-danger me-1"></i>Inactive accounts</span><strong>{{ inactive_accounts }}</strong></div>
+      </div>
+    </div>
+    <div class="card shadow-sm">
+      <div class="card-header card-head">Quick Actions</div>
+      <div class="card-body d-grid gap-2">
+        <a href="{% url 'customer_add' %}" class="btn btn-brand"><i class="bi bi-person-plus me-1"></i>Add Customer</a>
+        <a href="{% url 'account_create' %}" class="btn btn-outline-brand"><i class="bi bi-wallet2 me-1"></i>Create Account</a>
+        <a href="{% url 'deposit' %}" class="btn btn-outline-brand"><i class="bi bi-arrow-down-circle me-1"></i>Deposit</a>
+        <a href="{% url 'withdraw' %}" class="btn btn-outline-brand"><i class="bi bi-arrow-up-circle me-1"></i>Withdraw</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "bank/base.html" %}
+{% block title %}Customer Details{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <h4 class="page-title m-0"><i class="bi bi-person-vcard me-2"></i>Customer Details</h4>
+  <div>
+    <a href="{% url 'customer_update' customer.pk %}" class="btn btn-warning"><i class="bi bi-pencil me-1"></i>Edit</a>
+    <button type="button" class="btn btn-danger btn-delete" data-url="{% url 'customer_delete' customer.pk %}" data-name="{{ customer.full_name }}"><i class="bi bi-trash me-1"></i>Delete</button>
+  </div>
+</div>
+<div class="card shadow-sm mb-4"><div class="card-body"><div class="row">
+  <div class="col-md-6"><table class="table table-borderless detail-table mb-0">
+    <tr><th>Customer ID</th><td>C{{ customer.customer_id|stringformat:"04d" }}</td></tr>
+    <tr><th>Full Name</th><td>{{ customer.full_name }}</td></tr>
+    <tr><th>Date of Birth</th><td>{{ customer.date_of_birth|date:"d M Y" }}</td></tr>
+    <tr><th>Gender</th><td>{{ customer.get_gender_display }}</td></tr>
+  </table></div>
+  <div class="col-md-6"><table class="table table-borderless detail-table mb-0">
+    <tr><th>Phone</th><td>{{ customer.phone }}</td></tr>
+    <tr><th>Email</th><td>{{ customer.email }}</td></tr>
+    <tr><th>Address</th><td>{{ customer.address }}</td></tr>
+    <tr><th>Created</th><td>{{ customer.created_at|date:"d M Y, h:i A" }}</td></tr>
+  </table></div>
+</div></div></div>
+
+<div class="card shadow-sm">
+  <div class="card-header card-head d-flex justify-content-between align-items-center">
+    <span>Bank Accounts</span>
+    <a href="{% url 'account_create' %}?customer={{ customer.pk }}" class="btn btn-sm btn-light">+ New Account</a>
+  </div>
+  <div class="table-responsive"><table class="table table-hover mb-0">
+    <thead><tr><th>Account No.</th><th>Type</th><th class="text-end">Balance</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {% for a in accounts %}
+      <tr><td>{{ a.account_number }}</td><td>{{ a.get_account_type_display }}</td><td class="text-end">&#8377; {{ a.current_balance }}</td>
+      <td><span class="badge {% if a.is_active %}bg-success{% else %}bg-secondary{% endif %}">{{ a.get_status_display }}</span></td>
+      <td><a href="{% url 'account_detail' a.pk %}" class="btn btn-sm btn-info text-white"><i class="bi bi-eye"></i></a></td></tr>
+    {% empty %}<tr><td colspan="5" class="text-center text-muted py-3">No accounts yet.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</div>
+{% endblock %}

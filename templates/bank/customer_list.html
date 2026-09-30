@@ -1,0 +1,36 @@
+{% extends "bank/base.html" %}
+{% block title %}Customer List{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <h4 class="page-title m-0"><i class="bi bi-people me-2"></i>Customer List</h4>
+  <a href="{% url 'customer_add' %}" class="btn btn-brand"><i class="bi bi-person-plus me-1"></i>Add Customer</a>
+</div>
+<form method="get" class="input-group mb-3">
+  <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by name, phone or email">
+  <button class="btn btn-brand"><i class="bi bi-search"></i> Search</button>
+  {% if query %}<a href="{% url 'customer_list' %}" class="btn btn-outline-secondary">Clear</a>{% endif %}
+</form>
+<div class="card shadow-sm"><div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+  <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Email</th><th>Joined</th><th class="text-center">Actions</th></tr></thead>
+  <tbody>
+  {% for c in page_obj %}
+    <tr>
+      <td>C{{ c.customer_id|stringformat:"04d" }}</td>
+      <td>{{ c.full_name }}</td><td>{{ c.phone }}</td><td>{{ c.email }}</td>
+      <td>{{ c.created_at|date:"d M Y" }}</td>
+      <td class="text-center text-nowrap">
+        <a href="{% url 'customer_detail' c.pk %}" class="btn btn-sm btn-info text-white" title="View"><i class="bi bi-eye"></i></a>
+        <a href="{% url 'customer_update' c.pk %}" class="btn btn-sm btn-warning" title="Edit"><i class="bi bi-pencil"></i></a>
+        <a href="{% url 'account_create' %}?customer={{ c.pk }}" class="btn btn-sm btn-success" title="Open account"><i class="bi bi-wallet2"></i></a>
+        <button type="button" class="btn btn-sm btn-danger btn-delete" data-url="{% url 'customer_delete' c.pk %}" data-name="{{ c.full_name }}" title="Delete"><i class="bi bi-trash"></i></button>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6" class="text-center text-muted py-4">No customers found.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% include "bank/_pagination.html" %}
+</div>
+{% endblock %}

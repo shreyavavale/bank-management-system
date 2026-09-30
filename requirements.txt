@@ -1,0 +1,4 @@
+Django>=4.2,<5.3
+djangorestframework>=3.15
+# Optional - only needed if you switch to MySQL (see settings.py)
+# mysqlclient>=2.2
